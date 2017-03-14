@@ -26,8 +26,6 @@ var aqiData = [
 
 (function () {
 
-  console.log('daisy');
-
   /*
   在注释下方编写代码
   遍历读取aqiData中各个城市的数据
@@ -35,23 +33,13 @@ var aqiData = [
   */
   var aqiList = document.getElementById('aqi-list');
 
-  aqiData.sort();
-  aqiData.reverse();
-
-   aqiData = aqiData.filter(function(item,index,array) {
-    return array[index][1]>=60;
-  });
-
-
-
-  for (var i = 0; i < aqiData.length; i++) {
-    aqiList.innerHTML += "<li>第"+(i+1)+"名："+aqiData[i][0]+","+aqiData[i][1]+"</li>";
-  }
-
-  
-
-  console.log();
-
+  aqiData.sort(function(a,b){return b[1]-a[1];})
+         .filter(function(element) {
+            return element[1]>60;
+          })
+         .forEach(function(element,index){
+          aqiList.innerHTML += "<li>第"+index+"名："+element[0]+","+element[1]+"</li>";
+         });
 })();
 
 </script>
