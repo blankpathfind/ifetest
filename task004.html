@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task004</title>
+</head>
+<body>
+<style type="text/css">
+	div.numdis {width: 30px; height: 30px; margin: 10px; background-color: #ccc; display: inline-block;}
+</style>
+	<form>
+		<input id="inputnum" type="text" name="inputarea">
+		<input class="button" id="leftin" type="button" value="左侧入">
+		<input class="button" id="leftout" type="button" value="左侧出">
+		<input class="button" id="rightin" type="button" value="右侧入">
+		<input class="button" id="rightout" type="button" value="右侧出">
+		<div id="display"></div>
+	</form>
+	<script type="text/javascript">
+		//var inputNum = document.getElementById('inputnum');
+		var number = new Array();
+		var displayNum = document.getElementById('display');
+		var button = document.getElementsByClassName('button');
+		var inputNum;		
+
+		var leftInButton = document.getElementById("leftin");
+		var leftOutButton = document.getElementById('leftout');
+		var rightInButton = document.getElementById('rightin');
+		var rightOutButton = document.getElementById('rightout');
+
+		leftInButton.onclick = function(){
+			var	inputInsert = document.getElementById('inputnum').value;
+			if (isNaN(inputInsert)||inputInsert == '') 
+			{
+				alert("输入必须为数字");
+			}
+			else{
+				inputNum = inputInsert;
+				leftIn();
+			}
+		}
+
+		leftOutButton.onclick = function(){
+			leftOut();
+		}
+		rightInButton.onclick = function(){
+			var	inputInsert = document.getElementById('inputnum').value;
+			if (isNaN(inputInsert)||inputInsert == '') 
+			{
+				alert("输入必须为数字");
+			}
+			else{
+				inputNum = inputInsert;
+				rightIn();
+			}
+		}
+		rightOutButton.onclick = function(){
+			rightOut();
+		}
+
+		function leftIn() {
+			//点击左侧入执行函数
+			number.unshift(inputNum);
+			display();
+		}
+
+		function rightIn() {
+			// 点击右侧入执行函数
+			number.push(inputNum);
+			display();
+		}
+
+		function leftOut() {
+			// body...点击左侧出执行函数
+			number.shift();
+			display();
+		}
+
+		function rightOut(){
+			//点击右侧出执行函数
+			number.pop();
+			display();
+		}
+
+		function display(){
+			//将队列显示
+			document.getElementById('inputnum').value = '';
+			if (!(number.length==0)) {
+				//创建子节点
+				displayNum.innerHTML = '';
+				number.forEach(function (num,index,array) {
+					// 对于每个数字执行
+					var numDis = document.createElement("div");
+					displayNum.appendChild(numDis);
+					numDis.setAttribute("class","numdis");
+					numDis.innerHTML = num;
+					numDis.addEventListener("click",function(){
+						displayNum.removeChild(this);
+						array.splice(index,1);
+					},false)
+				})
+			}
+		}
+	</script>
+</body>
+</html>
