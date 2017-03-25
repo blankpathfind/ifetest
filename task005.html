@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task004</title>
+</head>
+<body>
+<style type="text/css">
+	div.numdis {width: 30px; height: 30px; margin: 10px; background-color: #ccc; display: inline-block;}
+</style>
+	<form>
+		<input id="inputnum" type="text" name="inputarea">
+		<input class="button" id="leftin" type="button" value="左侧入">
+		<input class="button" id="leftout" type="button" value="左侧出">
+		<input class="button" id="rightin" type="button" value="右侧入">
+		<input class="button" id="rightout" type="button" value="右侧出">
+		<div id="display"></div>
+		<canvas id="a_canvas" width="1000" height="500"></canvas>
+	</form>
+	<script type="text/javascript">
+		//var inputNum = document.getElementById('inputnum');
+		var number = new Array();
+		var displayNum = document.getElementById('display');
+		var button = document.getElementsByClassName('button');
+		var inputNum;		
+
+		var leftInButton = document.getElementById("leftin");
+		var leftOutButton = document.getElementById('leftout');
+		var rightInButton = document.getElementById('rightin');
+		var rightOutButton = document.getElementById('rightout');
+
+		leftInButton.onclick = function(){
+			if(test())
+			{
+				leftIn();
+			}
+		}
+
+		leftOutButton.onclick = function(){
+			leftOut();
+		}
+		rightInButton.onclick = function(){
+			if (test()) 
+			{
+				rightIn();
+			}
+		}
+		rightOutButton.onclick = function(){
+			rightOut();
+		}
+
+		function test() {
+			if (number.length >= 60) {
+				alert("数列长度限于60");
+				return 0;
+			}
+			else
+			{
+				var	inputInsert = document.getElementById('inputnum').value;
+				if (isNaN(inputInsert)||inputInsert == ''||inputInsert<10 ||inputInsert > 100) 
+				{
+					alert("输入必须为10-100数字");
+					return 0;
+				}
+				else{
+						inputNum = inputInsert;
+						return 1;
+					}
+			}
+		}
+
+		function leftIn() {
+			//点击左侧入执行函数
+			number.unshift(inputNum);
+			display();
+		}
+
+		function rightIn() {
+			// 点击右侧入执行函数
+			number.push(inputNum);
+			display();
+		}
+
+		function leftOut() {
+			// body...点击左侧出执行函数
+			number.shift();
+			display();
+		}
+
+		function rightOut(){
+			//点击右侧出执行函数
+			number.pop();
+			display();
+		}
+
+		function display(){
+			//将队列显示
+			document.getElementById('inputnum').value = '';
+			if (!(number.length==0)) {
+				//创建子节点
+				displayNum.innerHTML = '';
+				number.forEach(function (num,index,array) {
+					// 对于每个数字执行
+					var numDis = document.createElement("div");
+					displayNum.appendChild(numDis);
+					numDis.setAttribute("class","numdis");
+					numDis.setAttribute("id","numdis"+index);
+					numDis.innerHTML = num;
+					numDis.addEventListener("click",function(){
+						displayNum.removeChild(this);
+						array.splice(index,1);
+					},false)
+				})
+			}
+
+			drawCanvas();
+		}
+
+		function drawCanvas() {
+//1.绘制画布
+
+			var a_canvas = document.getElementById('a_canvas');//绘制画布
+			var context = a_canvas.getContext("2d");//获取上下文
+
+			//2.绘制背景,设置其长宽，并设置填充方式设置渐变.线性渐变，设置颜色渐变方式
+			//var gradient = context.createLinearGradient(0,0,0,300);
+			// gradient.addColorStop(0,"#e0e0e0");    
+          //gradient.addColorStop(1,"#ffffff"); 
+          // context.fillStyle = gradient;
+
+          var realheight = a_canvas.height - 15;
+          var realwidth = a_canvas.width - 40;
+
+          //context.fillRect(x,y,width,height)绘制被填充的矩形
+
+         //3.画出横纵坐标轴，笔触宽度为1， 颜色是黑色
+
+         context.lineWidth = 2;
+         context.strokeStyle = "#a0a0a0";
+         //开始一条路径
+         context.beginPath();
+         //画横坐标
+         context.moveTo(0,realheight);
+         context.lineTo(realwidth,realheight);
+         //画纵坐标
+         context.moveTo(0,20);
+         context.lineTo(0,realheight);
+         //绘制当前路径
+         context.stroke();
+
+          //4，设置条形图的宽和高。宽视数据多少而定，高视数据大小而定
+          var grid_cols = number.length +1;
+          if(number.length <30)
+          {
+          	cell_width = 40;
+          }
+          else
+          {
+          	var cell_width = realwidth / grid_cols;
+          }
+         
+          //结束边框描绘
+
+          var max_v = 0;
+
+          for (var i = 0; i < number.length; i++) {
+          	if (number[i]>max_v) 
+          		{max_v = number[i];}
+          }
+
+          max_v = max_v *1.1;
+          console.log(number);
+         //5.将数据转换为坐标
+         var points = [];
+         for (var i = 0; i < number.length; i++) {
+         	var px = cell_width*(i+1);
+         	var py = realheight - realheight*(number[i]/max_v);
+         	var pheight = realheight*(number[i]/max_v);
+
+         	points.push({"x":px,"y":py,"z":pheight});	
+         }
+         
+
+          console.log(points);
+            for(var i in points) {
+              var p = points[i];
+              context.beginPath();
+              context.fillStyle = "green";
+              context.fillRect(p.x,p.y,cell_width/2,p.z);
+              context.fill();
+          }
+	}
+	</script>
+</body>
+</html>
